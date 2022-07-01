@@ -28,10 +28,7 @@ class Robozinho:
       direcao : str
           Apenas uma letra e precisa ser uma dessas três 'N', 'E', 'S', 'W'
 
-      Methods
-      -------
-      says(sound=None)
-          Prints the animals name and what sound it makes
+
       """
     def __init__(self, x, y, xmax, ymax, direcao, outras_posicoes):
         self.xmax = xmax
