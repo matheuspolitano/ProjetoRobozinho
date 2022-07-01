@@ -28,6 +28,9 @@ class Robozinho:
       direcao : str
           Apenas uma letra e precisa ser uma dessas três 'N', 'E', 'S', 'W'
 
+     outras_posicoes: list
+            Lista de outras posicoes, para verificar se aquela posicao já esta ocupada
+
 
       """
     def __init__(self, x, y, xmax, ymax, direcao, outras_posicoes):
