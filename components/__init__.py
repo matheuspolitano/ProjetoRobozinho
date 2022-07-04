@@ -231,6 +231,7 @@ def capturar_dados_terminal() -> list:
 
     except Exception as e:
         print("Erro encontrado..\n{separacao}".format(separacao=separacao))
+        print(str(e))
         exit()
 
 
