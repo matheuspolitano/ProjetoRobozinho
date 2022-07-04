@@ -220,7 +220,7 @@ def capturar_dados_terminal() -> list:
         por_arquivo_texto = SN_tratar(input("Você deseja adicionar via arquivo de texto (S/N):"))
         dados = None
         if por_arquivo_texto:
-            path_arquivo = input("Me diga qual a pasta do arquivo \nExemplo ./tests_files/input_test.txt \n:")
+            path_arquivo = input("Me diga qual o caminho do arquivo \nExemplo ./tests_files/input_test.txt \n:")
             dados = tratar_arquivo(path_arquivo)
 
         else:
