@@ -1,4 +1,5 @@
-from utils import SN_tratar
+from utils import SN_tratar,leitor_arquivo
+from  os import remove
 from unittest import TestCase
 class TestSNTratar(TestCase):
 
@@ -20,3 +21,18 @@ class TestSNTratar(TestCase):
             erro_real = ve
 
         self.assertEqual(erro_real.args,erro_esperado.args)
+
+
+class LeitorArquivo(TestCase):
+
+    def test_leitor_arquivo(self):
+        #criando arquivo para testar o leitor
+        content_file = "12 12 12\n12        123122131223"
+        path_file = "./tests_files/file_test_leito_arquivo.txt"
+        with open(path_file,"w") as f:
+            f.write(content_file)
+        retorno_esperado= [["12","12","12"],["12","123122131223"]]
+        retorno_real = leitor_arquivo(path_file)
+        remove(path_file)
+        self.assertEqual(retorno_real,retorno_esperado)
+

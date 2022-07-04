@@ -1,4 +1,4 @@
-from utils import SN_tratar
+from utils import SN_tratar, leitor_arquivo
 
 
 separacao = "".join(["-" for item in range(0, 10)])
@@ -111,6 +111,96 @@ class Robozinho:
         else:
             raise  Exception('Robos ocupando mesmo espaco!!')
 
+def tratar_arquivo(path_arquivo:str):
+
+    """
+    Esta funcao ira ler o arquivo e tratar o dados para o padrao esperado no run application
+
+    Parameters
+
+    ----------
+
+    path_arquivo: pasta do arquivo
+
+
+    return: list
+        list<int,int,list>
+
+        retorna os dados capturados na linha de comando
+
+
+    """
+
+    conteudo_arquivo = leitor_arquivo(path_arquivo)
+    qtd_linha = len(conteudo_arquivo)
+    if qtd_linha  < 3:
+        raise ValueError("O arquivo deve ter pelo menos tres linhas")
+    if qtd_linha%2==0:
+        raise ValueError("O arquivo deve ter sempre o numero impara de linhas, sendo a primeira linha os limite e o restante posicao do robo e intrucao")
+    
+    
+    
+
+    
+    #capturar posicao inicial
+    xmax,ymax= map(int,conteudo_arquivo[0])
+    movimentacoes = []
+
+    x, y, direcao =  conteudo_arquivo[1]
+    
+
+    
+
+    qtd_robo = qtd_linha//2
+
+    for index_robo in range(0,qtd_robo):
+        index_linha_posicao_robo = (2*index_robo)+1
+        index_linha_instrucao_robo = (2*index_robo)+2
+        x,y, direcao = conteudo_arquivo[index_linha_posicao_robo]
+        posicao = [int(x), int(y), str(direcao)]
+
+        instrucao = conteudo_arquivo[index_linha_instrucao_robo][0]
+        movimentacoes.append({"posicao": posicao, "instrucao":instrucao})
+      
+    return  (xmax,ymax,movimentacoes)
+
+def input_manual():
+
+    """
+    Funcao para capturar dados de cada robo no proprio terminal
+
+    return: list
+        list<int,int,list>
+
+        retorna os dados capturados na linha de comando
+
+
+    """
+
+    xmax,ymax= map(int,input("Determine tamanho maximo no eixo X e Y: \nExemplo: 100 100\n:").split())
+    movimentacoes = []
+
+    x, y, direcao =  input("Me diga a posicao que vc quer do robo no eixo x e y, assim como sua direcao(N/E/S/W): \nExemplo: 5 5 W\n Fique atento com\n* Não passar do limite\n* Não colocar dois robos na mesma posicao\n:").split()
+
+    posicao = [int(x), int(y), str(direcao)]
+
+    instrucao = input("Passe uma instrucao para o robo, cada letra é uma instrucao (L/R/M)\nDicionario\nL: virar para esquerda\nR: Virar para a direita\nM: Mover para frente\n*Pode se dar mais de uma comando por vez\nExemplo: MMRMMRMRRM\n:")
+
+    movimentacoes.append({"posicao": posicao,  "instrucao":instrucao})
+
+    adicionar_robo = SN_tratar(input("Você deseja adicionar outro robo (S/N):"))
+
+    while adicionar_robo:
+        x, y, direcao = input(
+                    "Me diga a posicao que vc quer do robo no eixo x e y, assim como sua direcao(N/E/S/W):").split()
+        posicao = [int(x), int(y), str(direcao)]
+
+        instrucao = input(
+                    "Passe uma instrucao para o robo, cada letra é uma instrucao (L/R/M):")
+        movimentacoes.append({"posicao": posicao, "instrucao":instrucao})
+        adicionar_robo = SN_tratar(input("Você deseja adicionar outro robo (S/N):"))
+    return  (xmax,ymax,movimentacoes)
+
 def capturar_dados_terminal() -> list:
     """
     Funcao para capturar dados para serem inseridos para roda run_application
@@ -126,29 +216,18 @@ def capturar_dados_terminal() -> list:
     print("Olá Bem vindo :)\n{separacao}".format(separacao=separacao))
 
     try:
-        xmax,ymax= map(int,input("Determine tamanho maximo no eixo X e Y: \nExemplo: 100 100\n:").split())
-        movimentacoes = []
+        #verificar se vai ser adicionado por arquivo de texto
+        por_arquivo_texto = SN_tratar(input("Você deseja adicionar via arquivo de texto (S/N):"))
+        dados = None
+        if por_arquivo_texto:
+            path_arquivo = input("Me diga qual a pasta do arquivo \nExemplo ./tests_files/input_test.txt \n:")
+            dados = tratar_arquivo(path_arquivo)
 
-        x, y, direcao =  input("Me diga a posicao que vc quer do robo no eixo x e y, assim como sua direcao(N/E/S/W): \nExemplo: 5 5 W\n Fique atento com\n* Não passar do limite\n* Não colocar dois robos na mesma posicao\n:").split()
+        else:
+            dados =  input_manual()
+        return dados
 
-        posicao = [int(x), int(y), str(direcao)]
-
-        instrucao = input("Passe uma instrucao para o robo, cada letra é uma instrucao (L/R/M)\nDicionario\nL: virar para esquerda\nR: Virar para a direita\nM: Mover para frente\n*Pode se dar mais de uma comando por vez\nExemplo: MMRMMRMRRM\n:")
-
-        movimentacoes.append({"posicao": posicao,  "instrucao":instrucao})
-
-        adicionar_robo = SN_tratar(input("Você deseja adicionar outro robo (S/N):"))
-
-        while adicionar_robo:
-            x, y, direcao = input(
-                "Me diga a posicao que vc quer do robo no eixo x e y, assim como sua direcao(N/E/S/W):").split()
-            posicao = [int(x), int(y), str(direcao)]
-
-            instrucao = input(
-                "Passe uma instrucao para o robo, cada letra é uma instrucao (L/R/M):")
-            movimentacoes.append({"posicao": posicao, "instrucao":instrucao})
-            adicionar_robo = SN_tratar(input("Você deseja adicionar outro robo (S/N):"))
-        return (xmax,ymax,movimentacoes)
+        
 
     except Exception as e:
         print("Erro encontrado..\n{separacao}".format(separacao=separacao))
@@ -164,7 +243,7 @@ def mensagem_final_terminal(saida_run_process:list) -> None:
 
     """
 
-    print("Resultado dos {qnt_robo}\n{separacao}".format(qnt_robo=len(saida_run_process),separacao=separacao))
+    print("Resultado dos {qnt_robo} robos\n{separacao}".format(qnt_robo=len(saida_run_process),separacao=separacao))
 
     for index,item_saida in enumerate(saida_run_process):
         if index==0:
